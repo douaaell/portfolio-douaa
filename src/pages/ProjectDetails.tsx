@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ChevronLeft, ChevronRight, Github, ExternalLink, Maximize2, X } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Github, ExternalLink, Maximize2, X, CheckCircle2, Layers } from 'lucide-react'
 import { useI18n, useTitle } from '../i18n'
 import { projects } from '../data/projects'
 import { Shot } from '../components/ProjectCard'
@@ -17,7 +17,6 @@ export default function ProjectDetails() {
 
   if (!p) return <NotFound />
 
-  const ph = <p className="rounded-xl border border-dashed border-line p-4 font-mono text-xs text-muted">{u.ph}</p>
   const screenshots = p.screenshots && p.screenshots.length > 0 ? p.screenshots : []
   const currentImg = screenshots[activeIdx] || screenshots[0]
 
@@ -34,18 +33,27 @@ export default function ProjectDetails() {
   }
 
   return (
-    <article className="mx-auto max-w-4xl px-5 py-14">
+    <article className="mx-auto max-w-5xl px-5 py-14">
       <Link to="/projects" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink">
         <ArrowLeft size={14} />{u.projects}
       </Link>
-      <p className="mt-8 font-mono text-xs uppercase text-accent">
+
+      <p className="mt-8 font-mono text-xs uppercase text-accent font-semibold tracking-wider">
         {u[`cat_${p.cat}` as 'cat_ia']} · {p.period}
       </p>
       <h1 className="mt-2 font-display text-4xl font-bold sm:text-6xl">{p.name}</h1>
-      <p className="mt-4 text-lg text-muted">{t(p.desc)}</p>
-      <div className="mt-5 flex flex-wrap gap-1.5">
-        {p.tech.map((x) => <span key={x} className="tag">{x}</span>)}
+      <p className="mt-4 text-lg text-muted leading-relaxed">{t(p.desc)}</p>
+
+      {/* Tech Tags */}
+      <div className="mt-5 flex flex-wrap gap-2">
+        {p.tech.map((x) => (
+          <span key={x} className="tag text-xs font-mono">
+            {x}
+          </span>
+        ))}
       </div>
+
+      {/* Action Buttons */}
       <div className="mt-6 flex flex-wrap gap-3">
         {p.github && (
           <a className="btn btn-ghost" href={p.github} target="_blank" rel="noreferrer">
@@ -63,7 +71,6 @@ export default function ProjectDetails() {
       <section className="mt-10">
         {screenshots.length > 0 ? (
           <div className="space-y-4">
-            {/* Main Window */}
             <div className="group relative overflow-hidden rounded-2xl border border-line bg-card shadow-sm">
               <div className="flex items-center justify-between border-b border-line px-4 py-2.5 bg-bg/60">
                 <div className="flex items-center gap-2">
@@ -86,13 +93,12 @@ export default function ProjectDetails() {
                 </button>
               </div>
 
-              {/* Display Area */}
-              <div className="relative flex min-h-[260px] sm:min-h-[420px] items-center justify-center bg-bg/40 p-2 sm:p-4">
+              <div className="relative flex min-h-[280px] sm:min-h-[460px] items-center justify-center bg-bg/40 p-2 sm:p-4">
                 <img
                   src={currentImg}
                   alt={`${p.name} screenshot ${activeIdx + 1}`}
                   onClick={() => setModalOpen(true)}
-                  className="max-h-[500px] w-full rounded-lg object-contain cursor-zoom-in transition duration-200"
+                  className="max-h-[520px] w-full rounded-lg object-contain cursor-zoom-in transition duration-200"
                 />
 
                 {screenshots.length > 1 && (
@@ -116,7 +122,6 @@ export default function ProjectDetails() {
               </div>
             </div>
 
-            {/* Thumbnails Row */}
             {screenshots.length > 1 && (
               <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-thin">
                 {screenshots.map((s, idx) => (
@@ -193,28 +198,109 @@ export default function ProjectDetails() {
         </div>
       )}
 
-      <section className="mt-12">
-        <h2 className="mb-3 font-display text-2xl font-bold">{u.features}</h2>
-        {p.features.length ? (
-          <ul className="list-disc space-y-2 pl-5 text-muted">
-            {p.features.map((f, i) => <li key={i}>{t(f)}</li>)}
-          </ul>
-        ) : ph}
-      </section>
+      {/* 3 Columns: Contexte, Problème, Solution */}
+      {(p.context || p.problem || p.solution) && (
+        <section className="mt-14 grid gap-5 md:grid-cols-3">
+          {p.context && (
+            <div className="card p-6 flex flex-col justify-start">
+              <h3 className="font-display text-xl font-bold text-accent mb-3">
+                {u.ctx}
+              </h3>
+              <p className="text-sm leading-relaxed text-muted">
+                {t(p.context)}
+              </p>
+            </div>
+          )}
+          {p.problem && (
+            <div className="card p-6 flex flex-col justify-start">
+              <h3 className="font-display text-xl font-bold text-accent mb-3">
+                {u.problem}
+              </h3>
+              <p className="text-sm leading-relaxed text-muted">
+                {t(p.problem)}
+              </p>
+            </div>
+          )}
+          {p.solution && (
+            <div className="card p-6 flex flex-col justify-start">
+              <h3 className="font-display text-xl font-bold text-accent mb-3">
+                {u.solution}
+              </h3>
+              <p className="text-sm leading-relaxed text-muted">
+                {t(p.solution)}
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
-      <section className="mt-12">
-        <h2 className="mb-4 font-display text-2xl font-bold">{u.arch}</h2>
-        {p.arch ? (
-          <div className="flex flex-wrap items-center gap-2" role="img" aria-label={p.arch.join(' → ')}>
-            {p.arch.map((a, i) => (
-              <span key={a} className="flex items-center gap-2">
-                <span className="rounded-xl border border-accent bg-sage/50 px-4 py-3 text-sm font-medium">{a}</span>
-                {i < p.arch!.length - 1 && <ChevronRight size={18} className="text-accent" />}
-              </span>
-            ))}
+      {/* Fonctionnalités */}
+      {p.features && p.features.length > 0 && (
+        <section className="mt-14">
+          <h2 className="mb-6 font-display text-2xl font-bold sm:text-3xl">
+            {u.features}
+          </h2>
+          <div className="card p-6 sm:p-8">
+            <ul className="space-y-3.5">
+              {p.features.map((f, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm sm:text-base text-muted">
+                  <span className="h-2 w-2 rounded-full bg-accent mt-2 flex-shrink-0" />
+                  <span className="leading-relaxed">{t(f)}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        ) : ph}
-      </section>
+        </section>
+      )}
+
+      {/* Architecture */}
+      {p.arch && p.arch.length > 0 && (
+        <section className="mt-14">
+          <h2 className="mb-2 font-display text-2xl font-bold sm:text-3xl">
+            {u.arch}
+          </h2>
+          <p className="text-xs text-muted mb-6">
+            {u.arch} — Flux des composants et technologies
+          </p>
+          <div className="card p-6 sm:p-8">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3" role="img" aria-label={p.arch.join(' → ')}>
+              {p.arch.map((a, i) => (
+                <span key={a} className="flex items-center gap-2 sm:gap-3">
+                  <span className="rounded-xl border border-line bg-sage/40 dark:bg-sage/20 px-4 py-2.5 text-xs sm:text-sm font-medium">
+                    {a}
+                  </span>
+                  {i < p.arch!.length - 1 && (
+                    <ChevronRight size={16} className="text-accent flex-shrink-0" />
+                  )}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Résultats / Objectifs */}
+      {p.results && (
+        <section className="mt-14">
+          <h2 className="mb-4 font-display text-2xl font-bold sm:text-3xl">
+            {u.results}
+          </h2>
+          <div className="card p-6 sm:p-8 border-l-4 border-l-accent bg-card/60">
+            <p className="text-sm sm:text-base leading-relaxed text-muted">
+              {t(p.results)}
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Bottom GitHub Link button if available */}
+      {p.github && (
+        <div className="mt-12 pt-6 border-t border-line">
+          <a className="btn btn-primary" href={p.github} target="_blank" rel="noreferrer">
+            <Github size={16} />{u.gh}
+          </a>
+        </div>
+      )}
     </article>
   )
 }

@@ -1,6 +1,23 @@
 export interface L { fr: string; en: string }
 export type Category = 'ia' | 'web' | 'mobile' | 'desktop'
-export interface Project { id: string; name: string; cat: Category; period: string; featured: boolean; tech: string[]; desc: L; features: L[]; arch: string[] | null; github: string | null; demo: string | null; screenshots?: string[] }
+export interface Project {
+  id: string
+  name: string
+  cat: Category
+  period: string
+  featured: boolean
+  tech: string[]
+  desc: L
+  features: L[]
+  arch: string[] | null
+  github: string | null
+  demo: string | null
+  screenshots?: string[]
+  context?: L
+  problem?: L
+  solution?: L
+  results?: L
+}
 export type CertStatus = 'completed' | 'in_progress' | 'planned'
 export interface Certification {
   id: string

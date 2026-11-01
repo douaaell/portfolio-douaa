@@ -1,0 +1,14 @@
+@tailwind base; @tailwind components; @tailwind utilities;
+:root{--bg:#F7F6F2;--card:#FFFFFF;--ink:#171717;--muted:#737373;--accent:#167D5A;--sage:#D8E9DF;--line:#E5E5E0}
+.dark{--bg:#181918;--card:#232524;--ink:#F2F1EC;--muted:#A3A39C;--accent:#8FCBAA;--sage:#2C3A33;--line:#363936}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{@apply bg-bg text-ink font-sans antialiased;overflow-x:hidden}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.btn{@apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition duration-200 min-h-[44px]}
+.btn-primary{@apply bg-accent text-white hover:opacity-90} .dark .btn-primary{color:#0f1a14}
+.btn-ghost{@apply border border-line bg-card hover:border-accent}
+.tag{@apply inline-block rounded-full border border-line bg-bg px-2.5 py-1 text-xs text-muted}
+.card{@apply rounded-2xl border border-line bg-card transition duration-300 hover:-translate-y-0.5 hover:border-accent}
+.fade{animation:fade .6s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

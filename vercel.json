@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!certificates/|cv.pdf|favicon.svg|assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
